@@ -43,6 +43,7 @@ interface IERC20 {
 
 contract WETH is IERC20 {
     event Deposit(address indexed from, uint indexed amount);
+    event Withdraw(address indexed to, uint indexed amount);
     string public name = "Wrapped Ether";
     string public symbol = "WETH";
     uint8 public decimals = 18;
@@ -109,9 +110,10 @@ contract WETH is IERC20 {
 
     function withdraw(uint amount) public payable {
         require(amount > 0, "You need to use some WETH to swap");
-        require(balances[msg.sender] > amount, "You don't have enough WETH.");
+        require(balances[msg.sender] >= amount, "You don't have enough WETH.");
         balances[msg.sender] -= amount;
         payable(msg.sender).transfer(amount);
+        emit Withdraw(msg.sender, amount);
     }
 
     function _mint(uint amount, address owner) private {
