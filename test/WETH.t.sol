@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8;
 
-import {Test, console2} from "forge-std/Test.sol";
+import {Test, console2} from "../lib/forge-std/src/Test.sol";
 import "../src/WETH.sol";
 
 contract WETHTest is Test {
@@ -74,5 +74,21 @@ contract WETHTest is Test {
 
         // 測項 8: approve 應該要給他人 allowance
         assertEq(weth.allowance(alice, bob), allwnaceBefore + amount);
+    }
+
+    function testTransferFrom() public {
+        deal(address(weth), alice, amount);
+        vm.prank(alice);
+        weth.approve(bob, amount);
+
+        uint256 allwnaceBefore = weth.allowance(alice, bob);
+
+        // 測項 9: transferFrom 應該要可以使用他人的 allowance
+        vm.prank(bob);
+        weth.transferFrom(alice, bob, amount);
+
+        // 測項 10: transferFrom 後應該要減除用完的 allowance
+        uint256 allwnaceAfter = weth.allowance(alice, bob);
+        assertEq(allwnaceAfter, allwnaceBefore - amount);
     }
 }

@@ -67,7 +67,7 @@ contract WETH is IERC20 {
     function transferFrom(address _from, address _to, uint256 _value) external returns (bool success) {
         _checkAddress(_from);
         _checkAddress(_to);
-        allowances[_from][msg.sender] > _value;
+        require(allowances[_from][msg.sender] >= _value, "Insufficient allowance");
         allowances[_from][msg.sender] -= _value;
         _transfer(_from, _to, _value);
         return true;
