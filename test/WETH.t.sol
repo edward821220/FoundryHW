@@ -1,5 +1,5 @@
-// SPDX-License-Identifier: UNLICENSED
-pragma solidity ^0.8.13;
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8;
 
 import {Test, console2} from "forge-std/Test.sol";
 import "../src/WETH.sol";
@@ -47,5 +47,17 @@ contract WETHTest is Test {
         assertEq(weth.balanceOf(alice), balance - amount);
         // 測項 5: withdraw 應該將 burn 掉的 erc20 換成 ether 轉給 user
         assertEq(alice.balance, amount);
+    }
+
+    function testTransfer() public {
+        deal(address(weth), alice, amount);
+        uint balanceAlice = weth.balanceOf(alice);
+
+        vm.prank(alice);
+        weth.transfer(bob, amount);
+
+        // 測項 7: transfer 應該要將 erc20 token 轉給別人
+        assertEq(weth.balanceOf(bob), amount);
+        assertEq(weth.balanceOf(alice), balanceAlice - amount);
     }
 }

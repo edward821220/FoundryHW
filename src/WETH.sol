@@ -126,7 +126,7 @@ contract WETH is IERC20 {
 
     function _checkBalance(address _address, uint _value) private view {
         require(
-            this.balanceOf(_address) > _value,
+            this.balanceOf(_address) >= _value,
             "You don't have enough WETH."
         );
     }
